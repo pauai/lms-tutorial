@@ -26,17 +26,15 @@ import { cn } from "@/lib/utils"
 import { Course } from "@prisma/client"
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: "Description is required"
-  })
+  price: z.coerce.number()
 })
 
-interface DescriptionFormProps {
+interface PriceFormProps {
   initialData: Course
   courseId: string
 }
 
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
 
 
   const [isEditing, setIsEditing] = useState(false)
@@ -48,7 +46,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || ""
+      price: initialData?.price || undefined
     }
   })
 
@@ -68,7 +66,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Course price
         <Button variant={'ghost'} onClick={toggleEdit}>
           {isEditing && (
             <>Cancel</>
@@ -76,23 +74,23 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
           {!isEditing && (
             <>
               <Pencil className="h-4 w-4 mr-4" />
-              <>Edit description</>
+              <>Edit price</>
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
-        <p className={cn("text-sm mt-2", !initialData.description && "text-slate-500 italic")}>
-          {initialData.description || "No description"}
+        <p className={cn("text-sm mt-2", !initialData.price && "text-slate-500 italic")}>
+          {initialData.price || "No price"}
         </p>
       )}
       {isEditing && (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-            <FormField control={form.control} name="description" render={({ field }) => (
+            <FormField control={form.control} name="price" render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea disabled={isSubmitting} placeholder="e.g 'This course is about'" {...field}/>
+                  <Input type="number" step="0.01" disabled={isSubmitting} placeholder="Set a price for your course" {...field}/>
                 </FormControl>
                 <FormMessage/>
               </FormItem>
@@ -109,4 +107,4 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   )
 }
 
-export default DescriptionForm
+export default PriceForm
