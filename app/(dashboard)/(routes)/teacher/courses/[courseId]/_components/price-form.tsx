@@ -24,6 +24,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 import { cn } from "@/lib/utils"
 import { Course } from "@prisma/client"
+import { formatPrice } from "@/lib/format"
 
 const formSchema = z.object({
   price: z.coerce.number()
@@ -81,7 +82,7 @@ const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
       </div>
       {!isEditing && (
         <p className={cn("text-sm mt-2", !initialData.price && "text-slate-500 italic")}>
-          {initialData.price || "No price"}
+          {initialData.price ? formatPrice(initialData.price) : "No price"}
         </p>
       )}
       {isEditing && (
